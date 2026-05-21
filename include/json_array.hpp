@@ -19,13 +19,13 @@ namespace json_internals
 
             void set (const std::vector<json> &values);
 
-            virtual bool equals (const std::shared_ptr<__json__> &other_p) const;
+            virtual bool equals (const std::shared_ptr<__json__> &other_p) const override;
 
             size_t size () const;
 
-            json& get (size_t index);
-            const json& get (size_t index) const;
+            json& operator[] (size_t index);
 
+            json get (size_t index) const;
             void set (size_t index, const json &value);
 
             void append (const json &value);
@@ -34,11 +34,14 @@ namespace json_internals
             void clear ();
             void extend (const std::shared_ptr<const __json_array__> &other_p);
 
-            virtual std::string to_string () const;
+            virtual std::string to_string () const override;
 
         private:
             std::vector<json>  m_values;
     };
+
+    inline std::shared_ptr<      __json_array__> json_as_array (      std::shared_ptr<__json__> &jobj_p) { return std::dynamic_pointer_cast<      __json_array__>(jobj_p); }
+    inline std::shared_ptr<const __json_array__> json_as_array (const std::shared_ptr<__json__> &jobj_p) { return std::dynamic_pointer_cast<const __json_array__>(jobj_p); }
 }
 
 class json_array : public json
@@ -56,11 +59,8 @@ class json_array : public json
         size_t size () const;
 
         json& operator[] (size_t index);
-        const json& operator[] (size_t index) const;
 
-        json& get (size_t index);
-        const json& get (size_t index) const;
-
+        json get (size_t index) const;
         void set (size_t index, const json &value);
 
         void append (const json &value);
@@ -69,7 +69,10 @@ class json_array : public json
         void clear ();
         void extend (const json_array &other);
 
-        virtual type data_type () const;
+        virtual type data_type () const override;
 };
+
+inline       json_array& json_as_array (      json &jobj) { return dynamic_cast<      json_array &>(jobj); }
+inline const json_array& json_as_array (const json &jobj) { return dynamic_cast<const json_array &>(jobj); }
 
 #endif /* __json_array_hpp */

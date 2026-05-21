@@ -1,5 +1,5 @@
 
-#include "json.hpp"
+#include "json_integer.hpp"
 
 namespace json_internals
 {
@@ -37,12 +37,7 @@ namespace json_internals
         m_value = value;
     }
 
-    const long& __json_integer__::value () const
-    {
-        return m_value;
-    }
-
-    long& __json_integer__::value ()
+    long __json_integer__::value () const
     {
         return m_value;
     }
@@ -80,12 +75,7 @@ json_integer& json_integer::operator= (const long value)
     return *this;
 }
 
-const long& json_integer::value () const
-{
-    return json_internals::json_as_integer(m_obj_p)->value();
-}
-
-long& json_integer::value ()
+long json_integer::value () const
 {
     return json_internals::json_as_integer(m_obj_p)->value();
 }

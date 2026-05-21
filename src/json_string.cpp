@@ -1,5 +1,6 @@
 
-#include "json.hpp"
+#include "json_string.hpp"
+#include <stdexcept>
 
 namespace json_internals
 {
@@ -15,18 +16,6 @@ namespace json_internals
     {
     }
 
-    __json_string__::__json_string__ (const char *s)
-        : __json__(),
-          m_value(s)
-    {
-    }
-
-    __json_string__::__json_string__ (const char *s, size_t len)
-        : __json__(),
-          m_value(s, len)
-    {
-    }
-
     __json_string__::__json_string__ (const std::string &s)
         : __json__(),
           m_value(s)
@@ -35,21 +24,6 @@ namespace json_internals
 
     __json_string__::~__json_string__ ()
     {
-    }
-
-    void __json_string__::set (const std::string &s)
-    {
-        m_value = s;
-    }
-
-    void __json_string__::set (const char *s)
-    {
-        m_value = std::string(s);
-    }
-
-    void __json_string__::set (const char *s, size_t len)
-    {
-        m_value = std::string(s, len);
     }
 
     bool __json_string__::equals (const std::shared_ptr<__json__> &other_p) const
@@ -64,12 +38,12 @@ namespace json_internals
         return m_value.length();
     }
 
-    const std::string& __json_string__::value () const
+    void __json_string__::set (const std::string &s)
     {
-        return m_value;
+        m_value = s;
     }
 
-    std::string& __json_string__::value ()
+    std::string __json_string__::value () const
     {
         return m_value;
     }
@@ -91,43 +65,32 @@ json_string::json_string (const json_string &other)
 {
 }
 
-json_string::json_string (const char *s)
-    : json()
-{
-    m_obj_p = std::make_shared<json_internals::__json_string__>(s);
-}
-
-json_string::json_string (const char *s, size_t len)
-    : json()
-{
-    m_obj_p = std::make_shared<json_internals::__json_string__>(s, len);
-}
-
 json_string::json_string (const std::string &s)
     : json()
 {
     m_obj_p = std::make_shared<json_internals::__json_string__>(s);
 }
 
+json_string::json_string (const char *s)
+    : json()
+{
+    if (!s)
+        throw std::runtime_error("s is null");
+
+    m_obj_p = std::make_shared<json_internals::__json_string__>(std::string(s));
+}
+
+json_string::json_string (const char *s, size_t len)
+    : json()
+{
+    if (!s)
+        throw std::runtime_error("s is null");
+
+    m_obj_p = std::make_shared<json_internals::__json_string__>(std::string(s, len));
+}
+
 json_string::~json_string ()
 {
-}
-
-json_string& json_string::operator= (const std::string &s)
-{
-    json_internals::json_as_string(m_obj_p)->set(s);
-    return *this;
-}
-
-json_string& json_string::operator= (const char *s)
-{
-    json_internals::json_as_string(m_obj_p)->set(s);
-    return *this;
-}
-
-void json_string::set (const char *s, size_t len)
-{
-    json_internals::json_as_string(m_obj_p)->set(s, len);
 }
 
 size_t json_string::length () const
@@ -135,12 +98,40 @@ size_t json_string::length () const
     return json_internals::json_as_string(m_obj_p)->length();
 }
 
-const std::string& json_string::value () const
+json_string& json_string::operator= (const std::string &s)
 {
-    return json_internals::json_as_string(m_obj_p)->value();
+    set(s);
+    return *this;
 }
 
-std::string& json_string::value ()
+json_string& json_string::operator= (const char *s)
+{
+    set(s);
+    return *this;
+}
+
+void json_string::set (const std::string &s)
+{
+    json_internals::json_as_string(m_obj_p)->set(s);
+}
+
+void json_string::set (const char *s)
+{
+    if (!s)
+        throw std::runtime_error("s is null");
+
+    set(std::string(s));
+}
+
+void json_string::set (const char *s, size_t len)
+{
+    if (!s)
+        throw std::runtime_error("s is null");
+
+    set(std::string(s, len));
+}
+
+std::string json_string::value () const
 {
     return json_internals::json_as_string(m_obj_p)->value();
 }

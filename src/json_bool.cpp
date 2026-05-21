@@ -1,5 +1,5 @@
 
-#include "json.hpp"
+#include "json_bool.hpp"
 
 namespace json_internals
 {
@@ -28,6 +28,7 @@ namespace json_internals
     {
         return "false";
     }
+
 
     __json_true__::__json_true__ ()
         : __json__()
@@ -74,6 +75,7 @@ json::type json_false::data_type () const
 {
     return JSON_FALSE;
 }
+
 
 json_true::json_true ()
     : json()

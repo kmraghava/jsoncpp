@@ -1,5 +1,5 @@
 
-#include "json.hpp"
+#include "json_array.hpp"
 #include <stdexcept>
 #include <sstream>
 
@@ -43,7 +43,7 @@ namespace json_internals
         return m_values.size();
     }
 
-    json& __json_array__::get (size_t index)
+    json& __json_array__::operator[] (size_t index)
     {
         if (index >= m_values.size())
             throw std::out_of_range("index out of range");
@@ -51,7 +51,7 @@ namespace json_internals
         return m_values[index];
     }
 
-    const json& __json_array__::get (size_t index) const
+    json __json_array__::get (size_t index) const
     {
         if (index >= m_values.size())
             throw std::out_of_range("index out of range");
@@ -150,36 +150,35 @@ size_t json_array::size () const
 
 json& json_array::operator[] (size_t index)
 {
-    return json_internals::json_as_array(m_obj_p)->get(index);
+    return (*json_internals::json_as_array(m_obj_p))[index];
 }
 
-const json& json_array::operator[] (size_t index) const
-{
-    return json_internals::json_as_array(m_obj_p)->get(index);
-}
-
-json& json_array::get (size_t index)
-{
-    return json_internals::json_as_array(m_obj_p)->get(index);
-}
-
-const json& json_array::get (size_t index) const
+json json_array::get (size_t index) const
 {
     return json_internals::json_as_array(m_obj_p)->get(index);
 }
 
 void json_array::set (size_t index, const json &value)
 {
+    if (*this == value)
+        throw std::runtime_error("invalid value array");
+
     json_internals::json_as_array(m_obj_p)->set(index, value);
 }
 
 void json_array::append (const json &value)
 {
+    if (*this == value)
+        throw std::runtime_error("invalid value array");
+
     json_internals::json_as_array(m_obj_p)->append(value);
 }
 
 void json_array::insert (size_t index, const json &value)
 {
+    if (*this == value)
+        throw std::runtime_error("invalid value array");
+
     json_internals::json_as_array(m_obj_p)->insert(index, value);
 }
 

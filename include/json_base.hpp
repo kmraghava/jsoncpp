@@ -58,6 +58,8 @@ class json
         bool operator== (const json &other) const;
         bool operator!= (const json &other) const;
 
+        bool equals (const json &other) const;
+
     protected:
         std::shared_ptr<json_internals::__json__>  m_obj_p;
 };

@@ -1,11 +1,11 @@
 
-#include "json.hpp"
+#include "json_real.hpp"
 
 namespace json_internals
 {
     __json_real__::__json_real__ ()
         : __json__(),
-          m_value(0)
+          m_value(0.0)
     {
     }
 
@@ -37,12 +37,7 @@ namespace json_internals
         m_value = value;
     }
 
-    const double& __json_real__::value () const
-    {
-        return m_value;
-    }
-
-    double& __json_real__::value ()
+    double __json_real__::value () const
     {
         return m_value;
     }
@@ -80,12 +75,7 @@ json_real& json_real::operator= (const double value)
     return *this;
 }
 
-const double& json_real::value () const
-{
-    return json_internals::json_as_real(m_obj_p)->value();
-}
-
-double& json_real::value ()
+double json_real::value () const
 {
     return json_internals::json_as_real(m_obj_p)->value();
 }

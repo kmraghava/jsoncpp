@@ -69,12 +69,17 @@ bool json::is_object () const
 
 bool json::operator== (const json &other) const
 {
-    return   m_obj_p
-           ? m_obj_p->equals(other.m_obj_p)
-           : false;
+    return m_obj_p == other.m_obj_p;
 }
 
 bool json::operator!= (const json &other) const
 {
     return !(*this == other);
+}
+
+bool json::equals (const json &other) const
+{
+    return   m_obj_p
+           ? m_obj_p->equals(other.m_obj_p)
+           : false;
 }

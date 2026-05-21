@@ -18,18 +18,20 @@ namespace json_internals
 
             __json_integer__& operator= (const __json_integer__ &other) = delete;
 
-            virtual bool equals (const std::shared_ptr<__json__> &other_p) const;
+            virtual bool equals (const std::shared_ptr<__json__> &other_p) const override;
 
             void set (const long value);
 
-            const long& value () const;
-            long& value ();
+            long value () const;
 
-            virtual std::string to_string () const;
+            virtual std::string to_string () const override;
 
         private:
             long  m_value;
     };
+
+    inline std::shared_ptr<      __json_integer__> json_as_integer (      std::shared_ptr<__json__> &jobj_p) { return std::dynamic_pointer_cast<      __json_integer__>(jobj_p); }
+    inline std::shared_ptr<const __json_integer__> json_as_integer (const std::shared_ptr<__json__> &jobj_p) { return std::dynamic_pointer_cast<const __json_integer__>(jobj_p); }
 }
 
 class json_integer : public json
@@ -44,10 +46,12 @@ class json_integer : public json
 
         json_integer& operator= (const long value);
 
-        const long& value () const;
-        long& value ();
+        long value () const;
 
-        virtual type data_type () const;
+        virtual type data_type () const override;
 };
+
+inline       json_integer& json_as_integer (      json &jobj) { return dynamic_cast<      json_integer &>(jobj); }
+inline const json_integer& json_as_integer (const json &jobj) { return dynamic_cast<const json_integer &>(jobj); }
 
 #endif /* __json_integer_hpp */

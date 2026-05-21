@@ -1,5 +1,5 @@
 
-#include "json.hpp"
+#include "json_object.hpp"
 #include <sstream>
 #include <stdexcept>
 
@@ -25,11 +25,6 @@ namespace json_internals
         m_values = values;
     }
 
-    void __json_object__::set (const std::string &key, const json &value)
-    {
-        m_values.insert_or_assign(key, value);
-    }
-
     bool __json_object__::equals (const std::shared_ptr<__json__> &other_p) const
     {
         const std::shared_ptr<const __json_object__> other_object_p = json_internals::json_as_object(other_p);
@@ -50,19 +45,14 @@ namespace json_internals
         return m_values[key];
     }
 
-    const json& __json_object__::operator[] (const std::string &key) const
+    json __json_object__::get (const std::string &key) const
     {
         return m_values.at(key);
     }
 
-    json& __json_object__::get (const std::string &key)
+    void __json_object__::set (const std::string &key, const json &value)
     {
-        return m_values.at(key);
-    }
-
-    const json& __json_object__::get (const std::string &key) const
-    {
-        return m_values.at(key);
+        m_values.insert_or_assign(key, value);
     }
 
     bool __json_object__::exists (const std::string &key) const
@@ -184,40 +174,20 @@ json& json_object::operator[] (const std::string &key)
     return (*json_internals::json_as_object(m_obj_p))[key];
 }
 
-const json& json_object::operator[] (const std::string &key) const 
-{
-    return (*json_internals::json_as_object(m_obj_p))[key];
-}
-
 json& json_object::operator[] (const char *key_p)
-{
-    return (*this)[std::string(key_p)];
-}
-
-const json& json_object::operator[] (const char *key_p) const
-{
-    return (*this)[std::string(key_p)];
-}
-
-json& json_object::get (const std::string &key)
-{
-    return json_internals::json_as_object(m_obj_p)->get(key);
-}
-
-const json& json_object::get (const std::string &key) const
-{
-    return json_internals::json_as_object(m_obj_p)->get(key);
-}
-
-json& json_object::get (const char *key_p)
 {
     if (!key_p)
         throw std::runtime_error("key is null");
 
-    return get(std::string(key_p));
+    return (*this)[std::string(key_p)];
 }
 
-const json& json_object::get (const char *key_p) const
+json json_object::get (const std::string &key) const
+{
+    return json_internals::json_as_object(m_obj_p)->get(key);
+}
+
+json json_object::get (const char *key_p) const
 {
     if (!key_p)
         throw std::runtime_error("key is null");
@@ -227,6 +197,9 @@ const json& json_object::get (const char *key_p) const
 
 void json_object::set (const std::string &key, const json &value)
 {
+    if (*this == value)
+        throw std::runtime_error("invalid value object");
+
     json_internals::json_as_object(m_obj_p)->set(key, value);
 }
 

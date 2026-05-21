@@ -12,30 +12,28 @@ namespace json_internals
             __json_string__ ();
             __json_string__ (const __json_string__ &other);
 
-            __json_string__ (const char *s);
-            __json_string__ (const char *s, size_t len);
             __json_string__ (const std::string &s);
 
             virtual ~__json_string__ ();
 
             __json_string__& operator= (const __json_string__ &other) = delete;
 
-            void set (const std::string &s);
-            void set (const char *s);
-            void set (const char *s, size_t len);
-
-            virtual bool equals (const std::shared_ptr<__json__> &other_p) const;
+            virtual bool equals (const std::shared_ptr<__json__> &other_p) const override;
 
             size_t length () const;
 
-            const std::string& value () const;
-            std::string& value ();
+            void set (const std::string &s);
 
-            virtual std::string to_string () const;
+            std::string value () const;
+
+            virtual std::string to_string () const override;
 
         private:
             std::string  m_value;
     };
+
+    inline std::shared_ptr<      __json_string__> json_as_string  (      std::shared_ptr<__json__> &jobj_p) { return std::dynamic_pointer_cast<      __json_string__>(jobj_p); }
+    inline std::shared_ptr<const __json_string__> json_as_string  (const std::shared_ptr<__json__> &jobj_p) { return std::dynamic_pointer_cast<const __json_string__>(jobj_p); }
 }
 
 class json_string : public json
@@ -44,23 +42,27 @@ class json_string : public json
         json_string ();
         json_string (const json_string &other);
 
+        json_string (const std::string &s);
         json_string (const char *s);
         json_string (const char *s, size_t len);
-        json_string (const std::string &s);
 
         virtual ~json_string ();
+
+        size_t length () const;
 
         json_string& operator= (const std::string &s);
         json_string& operator= (const char *s);
 
+        void set (const std::string &s);
+        void set (const char *s);
         void set (const char *s, size_t len);
 
-        size_t length () const;
+        std::string value () const;
 
-        const std::string& value () const;
-        std::string& value ();
-
-        virtual type data_type () const;
+        virtual type data_type () const override;
 };
+
+inline       json_string& json_as_string (      json &jobj) { return dynamic_cast<      json_string &>(jobj); }
+inline const json_string& json_as_string (const json &jobj) { return dynamic_cast<const json_string &>(jobj); }
 
 #endif /* __json_string_hpp */
