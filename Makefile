@@ -34,8 +34,10 @@ sources := $(src_dir)/json_array.cpp \
 		   $(src_dir)/json_bool.cpp \
 		   $(src_dir)/json_integer.cpp \
 		   $(src_dir)/json_object.cpp \
+		   $(src_dir)/json_parse.cpp \
 		   $(src_dir)/json_real.cpp \
 		   $(src_dir)/json_string.cpp \
+		   $(src_dir)/utf8.cpp \
 		   \
 
 # Object files

@@ -23,6 +23,19 @@ namespace json_internals
 class json
 {
     public:
+        static json parse (std::istream &stream);
+
+    private:
+        static json parse_object (std::istream &stream);
+        static json parse_array  (std::istream &stream);
+        static json parse_string (std::istream &stream);
+        static json parse_false  (std::istream &stream);
+        static json parse_true   (std::istream &stream);
+        static json parse_number (std::istream &stream);
+
+        static std::string parse_cstring (std::istream& stream);
+        
+    public:
         typedef enum
         {
             JSON_STRING,
