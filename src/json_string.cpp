@@ -1,6 +1,7 @@
 
 #include "json_string.hpp"
 #include <stdexcept>
+#include "utf8.hpp"
 
 namespace json_internals
 {
@@ -50,7 +51,15 @@ namespace json_internals
 
     std::string __json_string__::to_string () const
     {
-        return m_value;
+        std::string  str;
+        
+        str.reserve(3 + m_value.length());
+
+        str = '"';
+        str += m_value;
+        str += '"';
+
+        return str;
     }
 }
 
@@ -68,6 +77,9 @@ json_string::json_string (const json_string &other)
 json_string::json_string (const std::string &s)
     : json()
 {
+    if (!utf8::check_string(s))
+        throw std::runtime_error("utf8 check failed");
+
     m_obj_p = std::make_shared<json_internals::__json_string__>(s);
 }
 
@@ -77,6 +89,9 @@ json_string::json_string (const char *s)
     if (!s)
         throw std::runtime_error("s is null");
 
+    if (!utf8::check_string(s))
+        throw std::runtime_error("utf8 check failed");
+
     m_obj_p = std::make_shared<json_internals::__json_string__>(std::string(s));
 }
 
@@ -85,6 +100,9 @@ json_string::json_string (const char *s, size_t len)
 {
     if (!s)
         throw std::runtime_error("s is null");
+
+    if (!utf8::check_string(s, len))
+        throw std::runtime_error("utf8 check failed");
 
     m_obj_p = std::make_shared<json_internals::__json_string__>(std::string(s, len));
 }
@@ -112,6 +130,9 @@ json_string& json_string::operator= (const char *s)
 
 void json_string::set (const std::string &s)
 {
+    if (!utf8::check_string(s))
+        throw std::runtime_error("utf8 check failed");
+
     json_internals::json_as_string(m_obj_p)->set(s);
 }
 

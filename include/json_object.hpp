@@ -12,13 +12,10 @@ namespace json_internals
         public:
             __json_object__ ();
             __json_object__ (const __json_object__ &other);
-            __json_object__ (const std::map<std::string, json> &values);
-
+    
             virtual ~__json_object__ () = default;
 
             __json_object__& operator= (const __json_object__ &other) = delete;
-
-            void set (const std::map<std::string, json> &values);
 
             virtual bool equals (const std::shared_ptr<__json__> &other_p) const override;
 
@@ -55,11 +52,8 @@ class json_object : public json
     public:
         json_object ();
         json_object (const json_object &other);
-        json_object (const std::map<std::string, json> &values);
 
         virtual ~json_object ();
-
-        json_object& operator= (const std::map<std::string, json> &values);
 
         size_t size () const;
 

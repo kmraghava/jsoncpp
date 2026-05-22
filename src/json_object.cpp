@@ -2,6 +2,7 @@
 #include "json_object.hpp"
 #include <sstream>
 #include <stdexcept>
+#include "utf8.hpp"
 
 namespace json_internals
 {
@@ -14,16 +15,6 @@ namespace json_internals
         : __json__(other),
           m_values(other.m_values)
     {}
-
-    __json_object__::__json_object__ (const std::map<std::string, json> &values)
-        : __json__(),
-          m_values(values)
-    {}
-
-    void __json_object__::set (const std::map<std::string, json> &values)
-    {
-        m_values = values;
-    }
 
     bool __json_object__::equals (const std::shared_ptr<__json__> &other_p) const
     {
@@ -148,20 +139,8 @@ json_object::json_object (const json_object &other)
 {
 }
 
-json_object::json_object (const std::map<std::string, json> &values)
-    : json()
-{
-    m_obj_p = std::make_shared<json_internals::__json_object__>(values);
-}
-
 json_object::~json_object ()
 {
-}
-
-json_object& json_object::operator= (const std::map<std::string, json> &values)
-{
-    json_internals::json_as_object(m_obj_p)->set(values);
-    return *this;
 }
 
 size_t json_object::size () const
@@ -171,6 +150,9 @@ size_t json_object::size () const
 
 json& json_object::operator[] (const std::string &key)
 {
+    if (!utf8::check_string(key))
+        throw std::runtime_error("utf8 check failed");
+
     return (*json_internals::json_as_object(m_obj_p))[key];
 }
 
@@ -184,6 +166,9 @@ json& json_object::operator[] (const char *key_p)
 
 json json_object::get (const std::string &key) const
 {
+    if (!utf8::check_string(key))
+        throw std::runtime_error("utf8 check failed");
+
     return json_internals::json_as_object(m_obj_p)->get(key);
 }
 
@@ -197,6 +182,9 @@ json json_object::get (const char *key_p) const
 
 void json_object::set (const std::string &key, const json &value)
 {
+    if (!utf8::check_string(key))
+        throw std::runtime_error("utf8 check failed");
+
     if (*this == value)
         throw std::runtime_error("invalid value object");
 
@@ -213,6 +201,9 @@ void json_object::set (const char *key_p, const json &value)
 
 bool json_object::exists (const std::string &key) const
 {
+    if (!utf8::check_string(key))
+        throw std::runtime_error("utf8 check failed");
+
     return json_internals::json_as_object(m_obj_p)->exists(key);
 }
 
@@ -226,6 +217,9 @@ bool json_object::exists (const char *key_p) const
 
 void json_object::del (const std::string &key)
 {
+    if (!utf8::check_string(key))
+        throw std::runtime_error("utf8 check failed");
+
     json_internals::json_as_object(m_obj_p)->del(key);
 }
 
