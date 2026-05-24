@@ -113,10 +113,10 @@ namespace json_internals
         for (const auto &[key, value] : m_values)
         {
             if (!first)
-                ss << ',';
+                ss << ", ";
 
             ss << '"' << key << '"'
-               << ":"
+               << ": "
                << value.to_string();
 
             first = false;

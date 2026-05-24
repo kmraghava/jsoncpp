@@ -72,8 +72,27 @@ install: all
 
 	cp  include/* $(install_dir)/include/$(pkg_name)/
 
+
+
+######################################################################
+#  TESTING
+######################################################################
+
+# test directories
+test_dir := test
+test_srcs := $(test_dir)/src
+test_execs := $(test_dir)/execs
+
+#Test target
+test: $(lib_name).a
+	mkdir -p $(test_execs)
+	$(CPP) $(includes) $(test_srcs)/tsuites.cpp $(lib_name).a -o $(test_execs)/tsuites
+
+
+
 clean:
 	rm -rf $(build_dir)
+	rm -rf $(test_execs)
 
 .PHONY: all clean
 
