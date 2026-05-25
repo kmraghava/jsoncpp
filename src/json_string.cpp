@@ -29,9 +29,7 @@ namespace json_internals
 
     bool __json_string__::equals (const std::shared_ptr<__json__> &other_p) const
     {
-        return   json_internals::json_as_string(other_p)
-               ? m_value == json_internals::json_as_string(other_p)->m_value
-               : false;
+        return m_value == json_internals::json_as_string(other_p)->m_value;
     }
 
     size_t __json_string__::length () const
@@ -61,6 +59,16 @@ namespace json_internals
 
         return str;
     }
+
+    __json__::type __json_string__::data_type () const
+    {
+        return type_string;
+    }
+
+    __json__* __json_string__::clone () const
+    {
+        return new __json_string__(m_value);
+    }
 }
 
 json_string::json_string ()
@@ -71,6 +79,11 @@ json_string::json_string ()
 
 json_string::json_string (const json_string &other)
     : json(other)
+{
+}
+
+json_string::json_string (const std::shared_ptr<json_internals::__json__> &obj_p)
+    : json(obj_p)
 {
 }
 
@@ -157,7 +170,10 @@ std::string json_string::value () const
     return json_internals::json_as_string(m_obj_p)->value();
 }
 
-json::type json_string::data_type () const
+json_string json_as_string (json jobj)
 {
-    return JSON_STRING;
+    if (jobj.m_obj_p->data_type() != json_internals::__json__::type_string)
+        throw std::bad_cast();
+
+    return json_string(jobj.m_obj_p);
 }

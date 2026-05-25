@@ -18,12 +18,7 @@ namespace json_internals
 
     bool __json_object__::equals (const std::shared_ptr<__json__> &other_p) const
     {
-        const std::shared_ptr<const __json_object__> other_object_p = json_internals::json_as_object(other_p);
-
-        if (other_object_p)
-            return m_values == other_object_p->m_values;
-
-        return false;
+        return m_values == json_internals::json_as_object(other_p)->m_values;
     }
 
     size_t __json_object__::size () const
@@ -126,6 +121,21 @@ namespace json_internals
 
         return ss.str();
     }
+
+    __json__::type __json_object__::data_type () const
+    {
+        return type_object;
+    }
+
+    __json__* __json_object__::clone () const
+    {
+        __json_object__  *clone_object_p = new __json_object__();
+
+        for (const auto &[key, value] : m_values)
+            clone_object_p->set(key, value.clone());
+
+        return clone_object_p;
+    }
 }
 
 json_object::json_object ()
@@ -136,6 +146,11 @@ json_object::json_object ()
 
 json_object::json_object (const json_object &other)
     : json(other)
+{
+}
+
+json_object::json_object (const std::shared_ptr<json_internals::__json__> &obj_p)
+    : json(obj_p)
 {
 }
 
@@ -256,7 +271,10 @@ void json_object::update_recursive (const json_object &other)
     json_internals::json_as_object(m_obj_p)->update_recursive(json_internals::json_as_object(other.m_obj_p));
 }
 
-json::type json_object::data_type () const
+json_object json_as_object (json jobj)
 {
-    return JSON_OBJECT;
+    if (jobj.m_obj_p->data_type() != json_internals::__json__::type_object)
+        throw std::bad_cast();
+
+    return json_object(jobj.m_obj_p);
 }

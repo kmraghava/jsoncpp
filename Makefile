@@ -86,7 +86,14 @@ test_execs := $(test_dir)/execs
 #Test target
 test: $(lib_name).a
 	mkdir -p $(test_execs)
-	$(CPP) $(includes) $(test_srcs)/tsuites.cpp $(lib_name).a -o $(test_execs)/tsuites
+	$(CPP) $(includes) $(test_srcs)/tarray.cpp $(lib_name).a -o $(test_execs)/tarray
+	$(CPP) $(includes) $(test_srcs)/tbase.cpp $(lib_name).a -o $(test_execs)/tbase
+	$(CPP) $(includes) $(test_srcs)/tbool.cpp $(lib_name).a -o $(test_execs)/tbool
+	$(CPP) $(includes) $(test_srcs)/tinteger.cpp $(lib_name).a -o $(test_execs)/tinteger
+	$(CPP) $(includes) $(test_srcs)/tobject.cpp $(lib_name).a -o $(test_execs)/tobject
+	$(CPP) $(includes) $(test_srcs)/tparser.cpp $(lib_name).a -o $(test_execs)/tparser
+	$(CPP) $(includes) $(test_srcs)/treal.cpp $(lib_name).a -o $(test_execs)/treal
+	$(CPP) $(includes) $(test_srcs)/tstring.cpp $(lib_name).a -o $(test_execs)/tstring
 
 
 

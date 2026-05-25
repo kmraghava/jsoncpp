@@ -27,9 +27,7 @@ namespace json_internals
 
     bool __json_integer__::equals (const std::shared_ptr<__json__> &other_p) const
     {
-        return   json_internals::json_as_integer(other_p)
-               ? m_value == json_internals::json_as_integer(other_p)->m_value
-               : false;
+        return m_value == json_internals::json_as_integer(other_p)->m_value;
     }
 
     void __json_integer__::set (const long value)
@@ -46,7 +44,18 @@ namespace json_internals
     {
         return std::to_string(m_value);
     }
+
+    __json__::type __json_integer__::data_type () const
+    {
+        return type_integer;
+    }
+
+    __json__* __json_integer__::clone () const
+    {
+        return new __json_integer__(m_value);
+    }
 }
+
 
 json_integer::json_integer ()
     : json()
@@ -56,6 +65,11 @@ json_integer::json_integer ()
 
 json_integer::json_integer (const json_integer &other)
     : json(other)
+{
+}
+
+json_integer::json_integer (const std::shared_ptr<json_internals::__json__> &obj_p)
+    : json(obj_p)
 {
 }
 
@@ -80,7 +94,10 @@ long json_integer::value () const
     return json_internals::json_as_integer(m_obj_p)->value();
 }
 
-json::type json_integer::data_type () const
+json_integer json_as_integer (json jobj)
 {
-    return JSON_INTEGER;
+    if (jobj.m_obj_p->data_type() != json_internals::__json__::type_integer)
+        throw std::bad_cast();
+
+    return json_integer(jobj.m_obj_p);
 }

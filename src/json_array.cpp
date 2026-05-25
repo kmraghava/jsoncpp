@@ -30,12 +30,7 @@ namespace json_internals
 
     bool __json_array__::equals (const std::shared_ptr<__json__> &other_p) const
     {
-        const std::shared_ptr<const __json_array__>  other_array_p = json_internals::json_as_array(other_p);
-
-        if (other_array_p)
-            return m_values == other_array_p->m_values;
-
-        return false;
+        return m_values == json_internals::json_as_array(other_p)->m_values;
     }
 
     size_t __json_array__::size () const
@@ -114,7 +109,23 @@ namespace json_internals
 
         return ss.str();
     }
+
+    __json__::type __json_array__::data_type () const
+    {
+        return type_array;
+    }
+
+    __json__* __json_array__::clone () const
+    {
+        __json_array__  *clone_array_p = new __json_array__();
+
+        for (size_t ii = 0; ii < size(); ii++)
+            clone_array_p->append(m_values[ii].clone());
+
+        return clone_array_p;
+    }
 }
+
 
 json_array::json_array ()
     : json()
@@ -124,6 +135,11 @@ json_array::json_array ()
 
 json_array::json_array (const json_array &other)
     : json(other)
+{
+}
+
+json_array::json_array (const std::shared_ptr<json_internals::__json__> &obj_p)
+    : json(obj_p)
 {
 }
 
@@ -197,7 +213,10 @@ void json_array::extend (const json_array &other)
     json_internals::json_as_array(m_obj_p)->extend(json_internals::json_as_array(other.m_obj_p));
 }
 
-json::type json_array::data_type () const
+json_array json_as_array (json jobj)
 {
-    return JSON_ARRAY;
+    if (jobj.m_obj_p->data_type() != json_internals::__json__::type_array)
+        throw std::bad_cast();
+
+    return json_array(jobj.m_obj_p);
 }

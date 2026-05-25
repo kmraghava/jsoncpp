@@ -36,6 +36,10 @@ namespace json_internals
 
             virtual std::string to_string () const override;
 
+            virtual type data_type () const override;
+
+            virtual __json__* clone () const override;
+
         private:
             std::vector<json>  m_values;
     };
@@ -69,10 +73,11 @@ class json_array : public json
         void clear ();
         void extend (const json_array &other);
 
-        virtual type data_type () const override;
+        friend json_array json_as_array (json jobj);
+
+    private:
+        explicit json_array (const std::shared_ptr<json_internals::__json__> &obj_p);
 };
 
-inline       json_array& json_as_array (      json &jobj) { return dynamic_cast<      json_array &>(jobj); }
-inline const json_array& json_as_array (const json &jobj) { return dynamic_cast<const json_array &>(jobj); }
 
 #endif /* __json_array_hpp */

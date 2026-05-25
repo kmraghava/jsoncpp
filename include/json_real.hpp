@@ -26,6 +26,10 @@ namespace json_internals
 
             virtual std::string to_string () const override;
 
+            virtual type data_type () const override;
+
+            virtual __json__* clone () const override;
+
         private:
             double  m_value;
     };
@@ -48,10 +52,10 @@ class json_real : public json
 
         double value () const;
 
-        virtual type data_type () const override;
-};
+        friend json_real json_as_real (json jobj);
 
-inline       json_real& json_as_real (      json &jobj) { return dynamic_cast<      json_real &>(jobj); }
-inline const json_real& json_as_real (const json &jobj) { return dynamic_cast<const json_real &>(jobj); }
+    private:
+        explicit json_real (const std::shared_ptr<json_internals::__json__> &obj_p);
+};
 
 #endif /* __json_real_hpp */

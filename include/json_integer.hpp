@@ -26,6 +26,10 @@ namespace json_internals
 
             virtual std::string to_string () const override;
 
+            virtual type data_type () const override;
+
+            virtual __json__* clone () const override;
+
         private:
             long  m_value;
     };
@@ -48,10 +52,10 @@ class json_integer : public json
 
         long value () const;
 
-        virtual type data_type () const override;
-};
+        friend json_integer json_as_integer (json jobj);
 
-inline       json_integer& json_as_integer (      json &jobj) { return dynamic_cast<      json_integer &>(jobj); }
-inline const json_integer& json_as_integer (const json &jobj) { return dynamic_cast<const json_integer &>(jobj); }
+    private:
+        explicit json_integer (const std::shared_ptr<json_internals::__json__> &obj_p);
+};
 
 #endif /* __json_integer_hpp */

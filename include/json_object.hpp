@@ -39,6 +39,10 @@ namespace json_internals
 
             virtual std::string to_string () const override;
 
+            virtual type data_type () const override;
+
+            virtual __json__* clone () const override;
+
         private:
             std::map<std::string, json>  m_values;
     };
@@ -79,10 +83,10 @@ class json_object : public json
         void update_missing (const json_object &other);
         void update_recursive (const json_object &other);
 
-        virtual type data_type () const override;
-};
+        friend json_object json_as_object (json jobj);
 
-inline       json_object& json_as_object (      json &jobj) { return dynamic_cast<      json_object &>(jobj); }
-inline const json_object& json_as_object (const json &jobj) { return dynamic_cast<const json_object &>(jobj); }
+    private:
+        explicit json_object (const std::shared_ptr<json_internals::__json__> &obj_p);
+};
 
 #endif /* __json_object_hpp */

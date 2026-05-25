@@ -27,9 +27,7 @@ namespace json_internals
 
     bool __json_real__::equals (const std::shared_ptr<__json__> &other_p) const
     {
-        return   json_internals::json_as_real(other_p)
-               ? m_value == json_internals::json_as_real(other_p)->m_value
-               : false;
+        return m_value == json_internals::json_as_real(other_p)->m_value;
     }
 
     void __json_real__::set (const double value)
@@ -46,6 +44,16 @@ namespace json_internals
     {
         return std::to_string(m_value);
     }
+
+    __json__::type __json_real__::data_type () const
+    {
+        return type_real;
+    }
+
+    __json__* __json_real__::clone () const
+    {
+        return new __json_real__(m_value);
+    }
 }
 
 json_real::json_real ()
@@ -56,6 +64,11 @@ json_real::json_real ()
 
 json_real::json_real (const json_real &other)
     : json(other)
+{
+}
+
+json_real::json_real (const std::shared_ptr<json_internals::__json__> &obj_p)
+    : json(obj_p)
 {
 }
 
@@ -80,7 +93,10 @@ double json_real::value () const
     return json_internals::json_as_real(m_obj_p)->value();
 }
 
-json::type json_real::data_type () const
+json_real json_as_real (json jobj)
 {
-    return JSON_REAL;
+    if (jobj.m_obj_p->data_type() != json_internals::__json__::type_real)
+        throw std::bad_cast();
+
+    return json_real(jobj.m_obj_p);
 }
