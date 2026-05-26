@@ -52,6 +52,9 @@ class json
 {
     public:
         static json parse (std::istream &stream);
+        static json parse (std::string_view s);
+        static json parse (const char *s);
+        static json parse (const char *s, size_t len);
 
     private:
         static json parse_object (std::istream &stream);

@@ -40,6 +40,44 @@ json json::parse (std::istream &stream)
     return jobj;
 }
 
+json json::parse (std::string_view s)
+{
+    // A tiny, zero-copy custom stream buffer
+    struct string_view_buf : std::streambuf
+    {
+        string_view_buf(std::string_view str)
+        {
+            // Set the get area pointers: beginning, current position, and end of the string_view data
+            char* p = const_cast<char*>(str.data());
+            setg(p, p, p + str.size());
+        }
+    };
+
+    // Wrap the string_view memory range inside our zero-copy buffer
+    string_view_buf buf(s);
+    
+    // Initialize a standard istream pointing directly to that buffer
+    std::istream stream(&buf);
+    
+    return parse(stream);
+}
+
+json json::parse (const char *s)
+{
+    if (!s)
+        throw std::runtime_error("s is null");
+    
+    return parse(std::string_view(s));
+}
+
+json json::parse (const char *s, size_t len)
+{
+    if (!s)
+        throw std::runtime_error("s is null");
+    
+    return parse(std::string_view(s, len));
+}
+
 json json::parse_object (std::istream &stream)
 {
     json_object  jobj;
